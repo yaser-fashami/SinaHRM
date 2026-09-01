@@ -1,0 +1,6 @@
+@SinaHRM.WebAPI_HostAddress = http://localhost:5045
+
+GET {{SinaHRM.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
