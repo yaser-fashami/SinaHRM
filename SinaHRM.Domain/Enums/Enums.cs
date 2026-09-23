@@ -65,17 +65,17 @@ public enum MaritalStatus
     /// <summary>
     /// مجرد
     /// </summary>
-    single = 0,
+    single = 1,
     /// <summary>
     /// متاهل
     /// </summary>
-    married = 1,
+    married = 2,
     /// <summary>
     /// مطلقه
     /// </summary>
-    divorced = 2,
+    divorced = 3,
     /// <summary>
     /// بیوه
     /// </summary>
-    widowed = 3,
+    widowed = 4,
 }

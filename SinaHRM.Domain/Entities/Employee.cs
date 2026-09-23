@@ -52,7 +52,7 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// شماره همراه
     /// </summary>
-    public string MobileNumber { get; set; }
+    public string? MobileNumber { get; set; }
     /// <summary>
     /// شماره ثابت
     /// </summary>
@@ -100,7 +100,7 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// تعداد فرزند
     /// </summary>
-    public byte NumberOfChildren { get; set; }
+    public byte? NumberOfChildren { get; set; }
 
 
     /// <summary>
@@ -110,27 +110,27 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// حق مسئولیت
     /// </summary>
-    public decimal ResponsibilitySalary { get; set; }
+    public decimal? ResponsibilitySalary { get; set; }
     /// <summary>
     /// پایه سنوات
     /// </summary>
-    public decimal YearsBase { get; set; }
+    public decimal? YearsBase { get; set; }
     /// <summary>
     /// حق مسکن
     /// </summary>
-    public decimal HousingBonous { get; set; }
+    public decimal? HousingBonous { get; set; }
     /// <summary>
     /// اقلام مصرفی خانوار-بن کارگری
     /// </summary>
-    public decimal WorkerBonous { get; set; }
+    public decimal? WorkerBonous { get; set; }
     /// <summary>
     /// حق تاهل
     /// </summary>
-    public decimal MartialBonous { get; set; }
+    public decimal? MartialBonous { get; set; }
     /// <summary>
     /// حق اولاد
     /// </summary>
-    public decimal ChildrenBonous { get; set; }
+    public decimal? ChildrenBonous { get; set; }
     /// <summary>
     /// معیل - فردی که شخص یا اشخاص دیگری تحت تکفل مالی او هستند
     /// </summary>
@@ -141,7 +141,7 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// مجموع حکم
     /// </summary>
-    public decimal TotalSalary => BaseSalary + ResponsibilitySalary + YearsBase + HousingBonous + WorkerBonous + MartialBonous + ChildrenBonous;
+    public decimal TotalSalary => BaseSalary + ResponsibilitySalary.Value + YearsBase.Value + HousingBonous.Value + WorkerBonous.Value + MartialBonous.Value + ChildrenBonous.Value;
     /// <summary>
     /// نام کامل
     /// </summary>
