@@ -1,0 +1,53 @@
+﻿@page "/Login"
+@model LoginModel
+@{
+    Layout = "";
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SinaHRM Logins</title>
+    <link href="~/assets/fonts/font-awesome/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/login.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="card">
+        <input type="checkbox" id="toggle" class="toggle" />
+        <div class="card-bg"></div>
+
+        <div class="hero register">
+            <h2 dir="rtl">خوش آمدید!</h2>
+            <p dir="rtl">در صورتیکه سیستم احراز هویت یکپارچه در دسترس نبود میتوانید از طریق این صفحه وارد بشوید. برای گرفتن یوزر و پسورد با واحد IT سازمان تماس بگیرید.</p>
+            <label for="toggle">LOGIN In SSO</label>
+        </div>
+
+        <div class="form register">
+            <h2>Local Login</h2>
+            <label>UserName</label>
+            <input type="text" placeholder="YaserFashami" />
+            <label>Password</label>
+            <input type="password" placeholder="••••••••" />
+            <button type="submit">Login</button>
+        </div>
+
+        <div class="hero login">
+            <h6> خوش آمدید SinaHRM به سیستم</h6>
+            <p dir="rtl">برای ورود به سیستم ,ابتدا در  my.spmco.co لاگین انجام دهید </p>
+            <label for="toggle">Local Login</label>
+        </div>
+
+        <div class="form login">
+            <h2>Login In SSO</h2>
+            <button type="submit">my.spmco.co</button>
+            <div class="socials">
+                <p dir="rtl">در صورت در دسترس نبودن سیستم احراز هویت یکپارچه میتوانید از سیستم احراز هویت داخلی استفاده نمایید</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

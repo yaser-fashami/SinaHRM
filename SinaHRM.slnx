@@ -1,21 +1,21 @@
 <Solution>
-  <Folder Name="/01/">
+  <Folder Name="/10.Util/">
     <Project Path="SinaHRM.Utilities/SinaHRM.Utilities.csproj" />
   </Folder>
-  <Folder Name="/02/">
+  <Folder Name="/20.Domain/">
     <Project Path="SinaHRM.Domain/SinaHRM.Domain.csproj" />
   </Folder>
-  <Folder Name="/03/">
+  <Folder Name="/30.Application/">
     <Project Path="SinaHRM.Application/SinaHRM.Application.csproj" />
   </Folder>
-  <Folder Name="/04/">
-    <Project Path="SinaHRM.Infrastracture/SinaHRM.Infrastracture.csproj" />
+  <Folder Name="/40.Infra/">
+    <Project Path="SinaHRM.Infrastracture/SinaHRM.Infrastracture.Data.Sql.csproj" />
   </Folder>
-  <Folder Name="/05/">
+  <Folder Name="/50.API/">
     <Project Path="SinaHRM.WebAPI/SinaHRM.API.csproj" />
   </Folder>
-  <Folder Name="/06/">
+  <Folder Name="/60.UI/">
     <Project Path="SinaHRM.WebUI/SinaHRM.WebUI.csproj" />
   </Folder>
-  <Folder Name="/07/" />
+  <Folder Name="/70.Tests/" />
 </Solution>
