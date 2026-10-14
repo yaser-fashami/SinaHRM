@@ -10,11 +10,11 @@ internal class JobLocationConfig : IEntityTypeConfiguration<JobLocation>
     {
         builder.ToTable("JobLocations", "Basic");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedOnAdd(); ;
         builder.Property(x => x.JobLocationName).IsRequired().HasMaxLength(100).IsUnicode(true);
-        builder.Property(x => x.Port).IsRequired().HasConversion<string>();
+        builder.Property(x => x.Branch).IsRequired().HasMaxLength(20).HasConversion<string>();
 
         #region Nav
-        builder.HasMany(c => c.Emploies).WithOne(c => c.JobLocation).HasForeignKey(e => e.JobLocationId);
         #endregion
     }
 }

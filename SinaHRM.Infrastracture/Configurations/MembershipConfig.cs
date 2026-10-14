@@ -10,6 +10,7 @@ internal class MembershipConfig : IEntityTypeConfiguration<Membership>
     {
         builder.ToTable("Memberships", "Basic");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedOnAdd(); ;
         builder.Property(x => x.CompanyName).IsRequired().HasMaxLength(100).IsUnicode(true);
         builder.Property(x => x.ApearanceCompanyName).HasMaxLength(100).IsUnicode(true);
         builder.Property(x => x.TitleCompany).HasMaxLength(200).IsUnicode(true);
@@ -19,7 +20,6 @@ internal class MembershipConfig : IEntityTypeConfiguration<Membership>
         builder.Property(x => x.PostalCode).HasMaxLength(10);
 
         #region Nav
-        builder.HasMany(c => c.Emploies).WithOne(c => c.Membership).HasForeignKey(e => e.MembershipId);
 
         #endregion
     }

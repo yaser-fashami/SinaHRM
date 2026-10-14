@@ -10,10 +10,9 @@ internal class ProfessionConfig : IEntityTypeConfiguration<Profession>
     {
         builder.ToTable("Professions", "Basic");
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.JobName).IsRequired().HasMaxLength(50).IsUnicode(true);
+        builder.Property(x => x.JobName).IsRequired().HasMaxLength(100).IsUnicode(true);
 
         #region Nav
-        builder.HasMany(c => c.Emploies).WithOne(c => c.Profession).HasForeignKey(e => e.ProfessionId);
 
         #endregion
 

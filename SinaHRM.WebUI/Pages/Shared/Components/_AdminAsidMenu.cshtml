@@ -1,5 +1,4 @@
 ﻿
-
 <div class="hover-scroll-overlay-y my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
 	<!--begin::Menu-->
 	<div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true" data-kt-menu-expو="false">
@@ -167,232 +166,18 @@
 		<div id="pages" data-kt-menu-trigger="click" class="menu-item menu-accordion">
 			<span class="menu-link">
 				<span class="menu-icon">
-					<i class="bi bi-archive fs-3"></i>
+					<i class="bi bi-sticky fs-2"></i>
 				</span>
-				<span class="menu-title">صفحات</span>
+				<span class="menu-title">مدیریت قراردادها</span>
 				<span class="menu-arrow"></span>
 			</span>
-			<div class="menu-sub menu-sub-accordion menu-active-bg">
+			<div id="personnelList" class="menu-sub menu-sub-accordion menu-active-bg">
 				<div class="menu-item">
-					<NavLink href="/Admin/News" class="menu-link">
-						<span class="menu-icon">
-							<i class="bi bi-newspaper fs-3"></i>
-						</span>
-						<span class="menu-title">اخبار</span>
-					</NavLink>
-					@* 					<a class="menu-link" href="/Admin/News">
-						<span class="menu-icon">
-							<i class="bi bi-newspaper fs-3"></i>
-						</span>
-						<span class="menu-title">اخبار</span>
-					</a>
- *@				</div>
-
-				<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-					<span class="menu-link">
+					<a class="menu-link" asp-page="ContractManagement/PersonnelList">
 						<span class="menu-bullet">
 							<span class="bullet bullet-dot"></span>
 						</span>
-						<span class="menu-title">کاربر پروفایل</span>
-						<span class="menu-arrow"></span>
-					</span>
-					<div class="menu-sub menu-sub-accordion menu-active-bg">
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/overview.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">بررسی اجمالی</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/projects.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">پروژه ها</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/campaigns.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">کمپین ها</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/documents.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">اسناد</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/followers.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">فالوورها</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/user-profile/activity.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">فعالیت</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-					<span class="menu-link">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">مقالات</span>
-						<span class="menu-arrow"></span>
-					</span>
-					<div class="menu-sub menu-sub-accordion menu-active-bg">
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/blog/home.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">مقالات خانه</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/blog/post.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">صفحه تکی مقالات</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-					<span class="menu-link">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">قیمت گذاری</span>
-						<span class="menu-arrow"></span>
-					</span>
-					<div class="menu-sub menu-sub-accordion menu-active-bg">
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/pricing/pricing-1.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">قیمت گذاری 1</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/pricing/pricing-2.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">قیمت گذاری 2</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-					<span class="menu-link">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">مشاغل</span>
-						<span class="menu-arrow"></span>
-					</span>
-					<div class="menu-sub menu-sub-accordion menu-active-bg">
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/careers/list.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">لیست مشاغل</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/careers/apply.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">مشاغل تایید</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-					<span class="menu-link">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">سوالات متداول</span>
-						<span class="menu-arrow"></span>
-					</span>
-					<div class="menu-sub menu-sub-accordion menu-active-bg">
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/faq/classic.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">کلاسیک</span>
-							</a>
-						</div>
-						<div class="menu-item">
-							<a class="menu-link" href="../../demo1/dist/pages/faq/extended.html">
-								<span class="menu-bullet">
-									<span class="bullet bullet-dot"></span>
-								</span>
-								<span class="menu-title">تمدید شده</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/pages/about.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">درباره ما</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/pages/contact.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">تماس با ما</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/pages/team.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">تیم ما</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/pages/licenses.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">مجوزها</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/pages/sitemap.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">نقشه سایت</span>
+						<span class="menu-title">کارکنان و پرونده پرسنلی</span>
 					</a>
 				</div>
 			</div>
@@ -400,82 +185,7 @@
 		<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
 			<span class="menu-link">
 				<span class="menu-icon">
-					<i class="bi bi-person fs-2"></i>
-				</span>
-				<span class="menu-title">اکانت</span>
-				<span class="menu-arrow"></span>
-			</span>
-			<div class="menu-sub menu-sub-accordion menu-active-bg">
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/overview.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">بررسی اجمالی</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/settings.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">تنظیمات</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/security.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">امنیت</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/billing.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">صورتحساب</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/statements.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">بیانه ها</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/referrals.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">مراجعات</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/api-keys.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">کلید ای پی ای</span>
-					</a>
-				</div>
-				<div class="menu-item">
-					<a class="menu-link" href="../../demo1/dist/account/logs.html">
-						<span class="menu-bullet">
-							<span class="bullet bullet-dot"></span>
-						</span>
-						<span class="menu-title">گزارش</span>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-			<span class="menu-link">
-				<span class="menu-icon">
-					<i class="bi bi-sticky fs-3"></i>
+					<i class="bi bi-person fs-3"></i>
 				</span>
 				<span class="menu-title">احراز هویت</span>
 				<span class="menu-arrow"></span>
@@ -2045,10 +1755,6 @@
 	</div>
 	<!--end::Menu-->
 </div>
-
-<script>
-	function applyNavigation(id) {
-		$('#'+id).addClass('show hover');
-	}
-</script>
+	<script  type="text/javascript">
+	</script>
 

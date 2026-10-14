@@ -1,7 +1,20 @@
+using SinaHRM.WebUI.Services.ContractManagement;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddHttpClient<PersonnelApiClient>((services, client) =>
+{
+    var configuration = services.GetRequiredService<IConfiguration>();
+
+    var baseUrl = configuration["ApiSettings:BaseUrl"]
+        ?? throw new InvalidOperationException(
+            "API base URL is not configured.");
+
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 var app = builder.Build();
 

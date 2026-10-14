@@ -13,6 +13,7 @@ public class Membership : BaseEntity<byte>
     public string? PostalCode { get; set; }
 
 
+    // Navigation Property
     public ICollection<Employee> Emploies { get; set; } = [];
 
 }

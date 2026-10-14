@@ -20,7 +20,7 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// سن
     /// </summary>
-    public int? Age { get; set; }
+    public byte? Age { get; set; }
     /// <summary>
     /// تاریخ تولد
     /// </summary>
@@ -58,6 +58,10 @@ public class Employee : BaseEntity<int>
     /// </summary>
     public string? PhoneNumber { get; set; }
     /// <summary>
+    /// ایمیل
+    /// </summary>
+    public string? Email { get; set; }
+    /// <summary>
     /// آدرس پستی
     /// </summary>
     public string? Address { get; set; }
@@ -89,6 +93,14 @@ public class Employee : BaseEntity<int>
     ///  محل خدمت
     /// </summary>
     public JobLocation JobLocation { get; set; }
+    /// <summary>
+    /// واحدسازمانیId
+    /// </summary>
+    public byte? DepartmentId { get; set; }
+    /// <summary>
+    /// واحدسازمانی
+    /// </summary>
+    public Department Department { get; set; }
     /// <summary>
     /// لایه مدیریتی
     /// </summary>
@@ -145,9 +157,13 @@ public class Employee : BaseEntity<int>
     /// <summary>
     /// نام کامل
     /// </summary>
-    public string FullName => FirstName + LastName;
+    public string FullName => FirstName + " " + LastName;
     /// <summary>
     /// مرکز هزینه
     /// </summary>
-    public string CostCenter => Membership.ApearanceCompanyName + '-' + JobLocation.Port.ToString();
+    public string? CostCenter => Membership.ApearanceCompanyName + '-' + JobLocation.Branch.ToString();
+
+    // Navigation Property
+    public ICollection<EmployeePhoto>? Photos { get; set; } = [];
+
 }

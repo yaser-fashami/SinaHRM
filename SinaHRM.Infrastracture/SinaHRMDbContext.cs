@@ -18,6 +18,8 @@ namespace SinaHRM.Infrastracture
         public DbSet<Profession> Professions { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<JobLocation> JobLocations { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<EmployeePhoto> EmployeePhotos { get; set; }
         #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -34,6 +36,8 @@ namespace SinaHRM.Infrastracture
             modelBuilder.ApplyConfiguration(new ProfessionConfig());
             modelBuilder.ApplyConfiguration(new MembershipConfig());
             modelBuilder.ApplyConfiguration(new JobLocationConfig());
+            modelBuilder.ApplyConfiguration(new DepartmentConfig());
+            modelBuilder.ApplyConfiguration(new EmployeePhotoConfig());
 
         }
     }

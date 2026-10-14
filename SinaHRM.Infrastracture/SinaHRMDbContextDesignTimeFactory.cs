@@ -7,8 +7,25 @@ public class SinaHRMDbContextDesignTimeFactory : IDesignTimeDbContextFactory<Sin
 {
     public SinaHRMDbContext CreateDbContext(string[] args)
     {
-        string cnn = @"Server=.;Initial Catalog=SinaHRMDB;User ID=sa; Password=Tomcat745; Encrypt=false;";
-        var options = new DbContextOptionsBuilder().UseSqlServer(cnn).Options;
-        return new SinaHRMDbContext(options);
+        var optionsBuilder =
+            new DbContextOptionsBuilder<SinaHRMDbContext>();
+
+        optionsBuilder.UseSqlServer(
+            "Server=.;" +
+            "Initial Catalog=SinaHRMDb;" +
+            "User Id=sa;Password=Tomcat745;" +
+            "Encrypt=false;" +
+            "TrustServerCertificate=True;",
+            sqlOptions =>
+            {
+                sqlOptions.MigrationsAssembly(
+                    typeof(SinaHRMDbContext)
+                        .Assembly
+                        .GetName()
+                        .Name);
+            });
+
+        return new SinaHRMDbContext(
+            optionsBuilder.Options);
     }
 }

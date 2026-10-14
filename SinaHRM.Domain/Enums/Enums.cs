@@ -30,6 +30,14 @@ public enum EducationalQualification
     /// فوق دکتری
     /// </summary>
     postDoctor = 6,
+    /// <summary>
+    /// حوزوی
+    /// </summary>
+    hozavi = 7,
+    /// <summary>
+    /// نامشخص
+    /// </summary>
+    Unknow = 8,
 }
 
 public enum Gender
@@ -38,7 +46,7 @@ public enum Gender
     male = 1,
 }
 
-public enum Port
+public enum Branch
 {
     headquarter = 0,
     rajaee = 1,
@@ -52,6 +60,7 @@ public enum Port
 
 public enum ManagementLayer
 {
+    noManager = 0,
     layer1 = 1,
     layer2 = 2,
     layer3 = 3,
