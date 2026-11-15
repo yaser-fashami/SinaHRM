@@ -31,7 +31,7 @@ public class EmploymentContract : BaseEntity<int>
     public string FinalText { get; set; } = null!;
 
     // شناسه فرایند در WorkflowEngine؛ قالب آن باید با قرارداد واقعی API هماهنگ شود.
-    public string? WorkflowInstanceId { get; set; }
+    public Guid? WorkflowInstanceId { get; set; }
 
     public DateTimeOffset? SignatureCompletedAtUtc { get; set; }
 
