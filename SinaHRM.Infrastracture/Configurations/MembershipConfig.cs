@@ -16,6 +16,7 @@ internal class MembershipConfig : IEntityTypeConfiguration<Membership>
         builder.Property(x => x.TitleCompany).HasMaxLength(200).IsUnicode(true);
         builder.Property(x => x.AcountCode).HasMaxLength(20);
         builder.Property(x => x.CEO).HasMaxLength(100).IsUnicode(true);
+        builder.Property(x => x.CEOMobile).HasMaxLength(12);
         builder.Property(x => x.Address).HasMaxLength(1000).IsUnicode(true);
         builder.Property(x => x.PostalCode).HasMaxLength(10);
 

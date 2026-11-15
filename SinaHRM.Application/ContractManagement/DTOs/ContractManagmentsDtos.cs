@@ -12,6 +12,7 @@ public sealed record PersonnelListItemDto(
     DateTime? BirthDate,
     string FatherName,
     string NationalCode,
+    string BirthCertificateNumber,
     string PlaceBirth,
     string PlaceOfIssuanceOfBirthCertificate,
     string Gender,
@@ -28,4 +29,17 @@ public sealed record PersonnelListItemDto(
     string MaritalStatus,
     byte? NumberOfChildren,
     decimal TotalSalary);
+
+public sealed record ContractListItemDto(
+    int Id,
+    string ContractNumber,
+    string EmployeeFullName,
+    DateOnly StartDate,
+    DateOnly EndDate,
+    string Status,
+    string Departman,
+    string Branch,
+    string Membership);
+
+
 

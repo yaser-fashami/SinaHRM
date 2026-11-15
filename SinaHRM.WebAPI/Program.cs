@@ -38,6 +38,17 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("RazorClient", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5062")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -51,8 +62,11 @@ builder.Services.AddSwaggerGen(options =>
 
 
 ///IoC
+builder.Services.AddSingleton<IPersianDatePeriodService, PersianDatePeriodService>();
+builder.Services.AddSingleton<IHtmlTemplateService, HtmlTemplateService>();
 builder.Services.AddScoped<IContractManagementRepository, ContractManegementRepository>();
 builder.Services.AddScoped<IContractManagementService, ContractManagementService>();
+builder.Services.AddScoped<IEmploymentContractRepository, EmploymentContractRepository>();
 
 var app = builder.Build();
 
@@ -70,6 +84,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("RazorClient");
 
 app.UseAuthorization();
 

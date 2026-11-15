@@ -10,7 +10,7 @@ internal class DepartmentConfig : IEntityTypeConfiguration<Department>
     {
         builder.ToTable("Departments", "Basic");
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd(); ;
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.DepartmentName).IsRequired().HasMaxLength(50).IsUnicode(true);
     }
 }

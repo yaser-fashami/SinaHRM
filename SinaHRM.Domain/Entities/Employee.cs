@@ -34,6 +34,10 @@ public class Employee : BaseEntity<int>
     /// </summary>
     public string NationalCode { get; set; }
     /// <summary>
+    /// شماره شناسنامه
+    /// </summary>
+    public string BirthCertificateNumber { get; set; }
+    /// <summary>
     /// محل تولد
     /// </summary>
     public string PlaceBirth { get; set; }

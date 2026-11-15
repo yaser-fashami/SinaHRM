@@ -1,4 +1,4 @@
-﻿
+﻿@inject IConfiguration Configuration
 
 <!DOCTYPE html>
 <html lang="fa">
@@ -14,8 +14,7 @@
 	<link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css">
 	<link href="~/assets/css/style.bundle.rtl.css" rel="stylesheet">
 	<link href="~/assets/css/style.dark.bundle.rtl.css" rel="stylesheet">
-@*     <link href="~/assets/plugins/custom/datatables/datatables.dark.bundle.rtl.css" rel="stylesheet" />
- *@</head>
+</head>
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
 	<!--begin::Main-->
 	<!--begin::Root-->
@@ -113,12 +112,11 @@
 	<!--end::Scrolltop-->
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/js/pageloader-spinner.js" asp-append-version="true"></script>
+	<script>PageLoader.show('در حال دریافت اطلاعات...');</script>
 	<script src="~/assets/plugins/global/plugins.bundle.js"></script>
 	<script src="~/assets/js/scripts.bundle.js"></script>
-	<!--end::Global Javascript Bundle-->
-	<!--begin::Page Vendors Javascript(used by this page)-->
-@* 	<script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
- *@	<!--end::Page Vendors Javascript-->
+
 	<!--begin::Page سفارشی Javascript(used by this page)-->
 	<script src="~/assets/js/widgets.bundle.js"></script>
 	<script src="~/assets/js/custom/widgets.js"></script>
@@ -126,6 +124,7 @@
 	<script src="~/assets/js/custom/utilities/modals/upgrade-plan.js"></script>
 	<script src="~/assets/js/custom/utilities/modals/create-app.js"></script>
 	<script src="~/assets/js/custom/utilities/modals/users-search.js"></script>
+
 	<!--end::Page custom Javascript-->
 	<!--end::Javascript-->
 	<script type="text/javascript">
@@ -144,7 +143,9 @@
 			}, 500)
 		})
 	</script>
-
+	<script>
+		window.apiBaseUrl = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["ApiSettings:BaseUrl"]));
+	</script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

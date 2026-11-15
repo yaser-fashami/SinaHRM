@@ -1,6 +1,6 @@
 ﻿namespace SinaHRM.WebUI.Services.Utilities;
 
-public static class Util
+public static class FarsiEnums
 {
     internal static string ConvertEducationalQualificationToFarsi(string input)
     {
@@ -24,6 +24,28 @@ public static class Util
             case "hozavi": result = "حوزوی";
                     break;
             case "Unknow": result = "نامشخص";
+                    break;
+        }
+        return result;
+    }
+    internal static string ConvertContractStatusToFarsi(string input)
+    {
+        string result = string.Empty;
+        switch (input)
+        {
+            case "Draft": result = " پیش نویس";
+                    break;
+            case "PendingSignature": result = "در انتظار امضاء";
+                    break;
+            case "Signed": result = "امضا شده";
+                    break;
+            case "Active": result = "فعال";
+                    break;
+            case "Expired": result = "منقضی شده";
+                    break;
+            case "Cancelled": result = "لغو شده";
+                    break;
+            case "Rejected": result = "برگشت داده شده";
                     break;
         }
         return result;

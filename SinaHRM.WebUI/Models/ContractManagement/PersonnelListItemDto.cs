@@ -10,6 +10,7 @@ public sealed record PersonnelListItemDto(
     DateTime? BirthDate,
     string FatherName,
     string NationalCode,
+    string BirthCertificateNumber,
     string PlaceBirth,
     string PlaceOfIssuanceOfBirthCertificate,
     string Gender,

@@ -1,0 +1,86 @@
+﻿@page
+@model SinaHRM.WebUI.Pages.ContractManagement.contract_viewerModel
+@{
+    ViewData["Title"] = "مخزن قراردادهای منابع انسانی / نمایش قرارداد";
+    ViewData["ActiveLink"] = "hrContracts";
+}
+
+
+
+
+
+<div class="viewer-container">
+
+    <!-- نوار ابزار -->
+    <div class="viewer-toolbar">
+        <h2>پیش‌نمایش قرارداد</h2>
+
+        <div class="toolbar-actions mb-5">
+            <button type="button" id="btnPrint" class="btn btn-primary">
+                چاپ / ذخیره PDF
+            </button>
+
+            <button type="button" id="btnClose" class="btn btn-secondary">
+                برگشت
+            </button>
+        </div>
+    </div>
+
+    <!-- پیام بارگذاری -->
+    <div id="contractLoading" class="loading" style="display:none">
+        در حال دریافت اطلاعات قرارداد...
+    </div>
+
+    <!-- پیام خطا -->
+    <div id="contractError" class="error-message" style="display:none"></div>
+
+    <!-- محتوای قرارداد -->
+    <section id="contractContent" class="contract-document">
+
+    </section>
+
+</div>
+
+
+    @section Scripts{
+        <link href="~/css/contract-viewer.css" rel="stylesheet" />
+        <script src="~/lib/dompurify/dist/purify.min.js"></script>
+        <script src="~/js/contract-viewer.js"></script>
+
+        <script>
+        $(document).ready(function () {
+            // در صورت نیاز شناسه قرارداد را از URL دریافت کنید
+            const params = new URLSearchParams(window.location.search);
+            const contractId = params.get("id");
+
+            ContractViewer.init({
+                apiUrl: `${window.apiBaseUrl}/api/v1.0/ContractManagement/contract-viewer?id=${contractId}`,
+                onLoaded: function () {
+                    console.log("قرارداد بارگذاری شد.");
+                },
+
+                onError: function (error) {
+                    console.error("خطا:", error);
+                }
+            });
+
+            if (contractId) {
+                ContractViewer.load(contractId);
+            }
+
+            PageLoader.hide();
+        });
+        </script>
+    }
+
+
+
+
+
+
+
+
+
+
+
+            

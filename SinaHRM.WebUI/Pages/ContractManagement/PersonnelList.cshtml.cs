@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SinaHRM.WebUI.Models.ContractManagement;
-using SinaHRM.WebUI.Services.ContractManagement;
+using SinaHRM.WebUI.Services.Interfaces;
 
 namespace SinaHRM.WebUI.Pages.ContractManagement;
 
-public sealed class PersonnelListModel(
-    PersonnelApiClient personnelApiClient,
-    ILogger<PersonnelListModel> logger) : PageModel
+public sealed class PersonnelListModel(IContractManagementApiClient contractApiClient, ILogger<PersonnelListModel> logger) : PageModel
 {
     public IReadOnlyList<PersonnelListItemDto> Personnel { get; private set; } = [];
 
@@ -16,7 +14,7 @@ public sealed class PersonnelListModel(
     {
         try
         {
-            Personnel = await personnelApiClient.GetAllAsync(cancellationToken);
+            Personnel = await contractApiClient.GetAllPersonnelAsync(cancellationToken);
         }
         catch (HttpRequestException exception)
         {

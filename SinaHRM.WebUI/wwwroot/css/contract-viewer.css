@@ -1,0 +1,208 @@
+﻿
+
+@font-face {
+    font-family: "IRANSansWeb";
+    src: url("../assets/fonts/IRANSansWeb.eot"); /* IE */
+    src: url("../assets/fonts/IRANSansWeb.eot?#iefix") format("embedded-opentype"), /* IE */
+    url("../assets/fonts/IRANSansWeb.woff") format("woff"), /* Modern Browsers */
+    url("../assets/fonts/IRANSansWeb.ttf") format("truetype"); /* Safari, Android, iOS */
+    font-weight: normal;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.viewer-container {
+    direction: rtl;
+    font-family: IRANSansWeb, Tahoma, Arial, sans-serif;
+    font-size: inherit;
+    line-height: 30px;
+    color: #222;
+    margin: 0;
+    padding: 15mm;
+    padding-bottom: 0mm;
+    background: white;
+    text-align: justify;
+    width:100%;
+}
+
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #777;
+    padding: 7px;
+}
+
+tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+h1, h2, h3 {
+    break-after: avoid;
+}
+
+/* محل شکست صفحه دستی */
+.page-break {
+    break-before: page;
+    page-break-before: always;
+}
+
+
+
+
+/* =====================================
+   امضای ثابت در پایین تمام صفحات چاپ
+===================================== */
+/*.contract-signatures {
+    display: none;
+}
+*/
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm 15mm 10mm 15mm !important;
+    }
+
+/*     مخفی کردن تمام اجزای صفحه 
+*/    body * {
+        visibility: hidden !important;
+    }
+
+/*     نمایش فقط محتوای قرارداد 
+*/    #contractContent,
+    #contractContent * {
+        visibility: visible !important;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+/*     قرار دادن قرارداد در صفحه چاپ 
+*/    #contractContent {
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+    }
+
+/*     مخفی کردن ابزارها و سربرگ سایت 
+*/    .viewer-toolbar,
+    .site-header,
+    .site-footer,
+    .navbar,
+    .sidebar,
+    .menu,
+    .loading,
+    .error-message,
+    #btnPrint,
+    #btnClose {
+        display: none !important;
+    }
+
+
+    #contractContent .contract-signatures {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 5mm !important;
+        width: 100% !important;
+        height: 25mm !important;
+        background: #fff !important;
+        z-index: 999999 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        direction: rtl !important;
+    }
+
+/*     ساختار دو ستونه بدون جدول 
+*/    .signature-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        direction: rtl !important;
+        flex-wrap: nowrap !important;
+
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .signature-box {
+        display: block !important;
+
+        width: 48% !important;
+        min-width: 48% !important;
+        max-width: 48% !important;
+
+        flex: 0 0 48% !important;
+
+        text-align: center !important;
+        padding: 0 5mm !important;
+
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .signature-title {
+        display: block !important;
+        font-size: 11px !important;
+        font-weight: bold !important;
+        margin-bottom: 7mm !important;
+        white-space: nowrap !important;
+    }
+
+    .signature-line {
+        display: block !important;
+        width: 70% !important;
+        height: 1px !important;
+
+        margin: 0 auto 3mm !important;
+
+        border-bottom: 1px solid #222 !important;
+    }
+
+    .signature-name {
+        display: block !important;
+        font-size: 10px !important;
+        white-space: nowrap !important;
+    }
+
+/*     جلوگیری از شکست اجزای امضا 
+*/    
+    .signature-wrapper,
+    .signature-box,
+    .signature-title,
+    .signature-line,
+    .signature-name {
+        page-break-before: avoid !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        
+        break-before: avoid !important;
+        break-after: avoid !important;
+        break-inside: avoid !important;
+    }
+}
+

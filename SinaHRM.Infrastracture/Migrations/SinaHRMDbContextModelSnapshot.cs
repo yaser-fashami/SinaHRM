@@ -77,6 +77,11 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                     b.Property<decimal>("BaseSalary")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("BirthCertificateNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
@@ -276,6 +281,422 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                     b.ToTable("EmployeePhotos", "Basic");
                 });
 
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContract", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset?>("ActivatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTimeOffset?>("CancelledAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ContractNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ContractType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("EmploymentContractTemplateVersionId")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("FinalText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset?>("SignatureCompletedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("WorkflowInstanceId")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractNumber")
+                        .IsUnique();
+
+                    b.HasIndex("EmploymentContractTemplateVersionId");
+
+                    b.HasIndex("WorkflowInstanceId");
+
+                    b.HasIndex("EmployeeId", "StartDate");
+
+                    b.HasIndex("EmployeeId", "Status");
+
+                    b.ToTable("EmploymentContracts", "Contract");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractFinancialItem", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<decimal>("CalculatedAmount")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<byte>("DisplayOrder")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("EmploymentContractId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("FinalAmount")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<byte?>("FinancialItemDefinitionId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsManuallyOverridden")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItemType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("OverrideReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("UpdatedByEmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinancialItemDefinitionId");
+
+                    b.HasIndex("EmploymentContractId", "DisplayOrder");
+
+                    b.ToTable("EmploymentContractFinancialItems", "Contract", t =>
+                        {
+                            t.HasCheckConstraint("CK_EmploymentContractFinancialItems_CalculatedAmount_NonNegative", "[CalculatedAmount] >= 0");
+
+                            t.HasCheckConstraint("CK_EmploymentContractFinancialItems_FinalAmount_NonNegative", "[FinalAmount] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractTemplate", b =>
+                {
+                    b.Property<byte>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("EmploymentContractTemplates", "Contract");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (byte)1,
+                            Code = "CONTRACT_CENTER",
+                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsDelete = false,
+                            Title = "قرارداد استخدامی ستاد مرکز"
+                        },
+                        new
+                        {
+                            Id = (byte)2,
+                            Code = "CONTRACT_BANDAR",
+                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsDelete = false,
+                            Title = "قرارداد استخدامی بندر"
+                        });
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractTemplateVersion", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<string>("ChangeDescription")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<int?>("CreatedByEmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("EmploymentContractTemplateId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TemplateText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("VersionNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmploymentContractTemplateId", "VersionNumber")
+                        .IsUnique();
+
+                    b.ToTable("EmploymentContractTemplateVersions", "Contract");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.FinancialItemCoefficient", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<decimal>("BaseAmount")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<decimal>("ConstantIncrease")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<byte>("FinancialItemDefinitionId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FiscalYear")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .IsUnicode(false)
+                        .HasColumnType("char(4)")
+                        .IsFixedLength();
+
+                    b.Property<decimal>("IncreaseFactor")
+                        .HasPrecision(8, 6)
+                        .HasColumnType("decimal(8,6)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<short>("Version")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinancialItemDefinitionId", "FiscalYear", "Version")
+                        .IsUnique();
+
+                    b.ToTable("FinancialItemCoefficients", "Contract", t =>
+                        {
+                            t.HasCheckConstraint("CK_FinancialItemCoefficients_IncreaseFactor", "[IncreaseFactor] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.FinancialItemDefinition", b =>
+                {
+                    b.Property<byte>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
+
+                    b.Property<bool>("AllowManualOverride")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<byte>("DisplayOrder")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("ItemType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("createdById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("FinancialItemDefinitions", "Contract");
+                });
+
             modelBuilder.Entity("SinaHRM.Domain.Entities.JobLocation", b =>
                 {
                     b.Property<byte>("Id")
@@ -343,6 +764,10 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CEOMobile")
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -461,6 +886,65 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContract", b =>
+                {
+                    b.HasOne("SinaHRM.Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SinaHRM.Domain.Entities.EmploymentContractTemplateVersion", "TemplateVersion")
+                        .WithMany("Contracts")
+                        .HasForeignKey("EmploymentContractTemplateVersionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("TemplateVersion");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractFinancialItem", b =>
+                {
+                    b.HasOne("SinaHRM.Domain.Entities.EmploymentContract", "Contract")
+                        .WithMany("FinancialItems")
+                        .HasForeignKey("EmploymentContractId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SinaHRM.Domain.Entities.FinancialItemDefinition", "Definition")
+                        .WithMany("ContractItems")
+                        .HasForeignKey("FinancialItemDefinitionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Contract");
+
+                    b.Navigation("Definition");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractTemplateVersion", b =>
+                {
+                    b.HasOne("SinaHRM.Domain.Entities.EmploymentContractTemplate", "Template")
+                        .WithMany("Versions")
+                        .HasForeignKey("EmploymentContractTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.FinancialItemCoefficient", b =>
+                {
+                    b.HasOne("SinaHRM.Domain.Entities.FinancialItemDefinition", "FinancialItemDefinition")
+                        .WithMany("FinancialItemCoefficients")
+                        .HasForeignKey("FinancialItemDefinitionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FinancialItemDefinition");
+                });
+
             modelBuilder.Entity("SinaHRM.Domain.Entities.Department", b =>
                 {
                     b.Navigation("Emploies");
@@ -469,6 +953,28 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
             modelBuilder.Entity("SinaHRM.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContract", b =>
+                {
+                    b.Navigation("FinancialItems");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractTemplate", b =>
+                {
+                    b.Navigation("Versions");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.EmploymentContractTemplateVersion", b =>
+                {
+                    b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("SinaHRM.Domain.Entities.FinancialItemDefinition", b =>
+                {
+                    b.Navigation("ContractItems");
+
+                    b.Navigation("FinancialItemCoefficients");
                 });
 
             modelBuilder.Entity("SinaHRM.Domain.Entities.JobLocation", b =>

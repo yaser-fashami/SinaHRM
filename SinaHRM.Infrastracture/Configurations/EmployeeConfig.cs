@@ -15,6 +15,7 @@ internal class EmployeeConfig : IEntityTypeConfiguration<Employee>
         builder.Property(x => x.LastName).IsRequired().HasMaxLength(200).IsUnicode(true);
         builder.Property(x => x.FatherName).IsRequired().HasMaxLength(50).IsUnicode(true);
         builder.Property(x => x.NationalCode).IsRequired().HasMaxLength(10);
+        builder.Property(x => x.BirthCertificateNumber).IsRequired().HasMaxLength(10);
         builder.Property(x => x.PlaceBirth).IsRequired().HasMaxLength(50).IsUnicode(true);
         builder.Property(x => x.PlaceOfIssuanceOfBirthCertificate).IsRequired().HasMaxLength(50).IsUnicode(true);
         builder.Property(x => x.Gneder).IsRequired().HasMaxLength(10).HasConversion<string>();

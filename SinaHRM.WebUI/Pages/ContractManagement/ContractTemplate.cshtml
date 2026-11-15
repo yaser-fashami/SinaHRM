@@ -1,0 +1,445 @@
+﻿@page
+@model SinaHRM.WebUI.Pages.ContractManagement.ContractTemplateModel
+@{
+    ViewData["Title"] = "قالب قراردادهای منابع انسانی";
+    ViewData["ActiveLink"] = "contractTemplate";
+}
+<div class="container-xxl">
+    <div class="row my-5">
+        <div class="col-3">
+            <div class="form-group col-sm">
+                <label class="required">انتخاب نوع قرارداد</label>
+                <select type="text" class="form-control" id="code">
+                    <option value="0" disabled="disabled" selected="selected"></option>
+                    <option value="CONTRACT_CENTER">قرارداد تهران</option>
+                    <option value="CONTRACT_BANDAR">قرارداد بندری</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-9">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <textarea id="editor" name="kt_docs_tinymce_basic" class="tox-target col-12">
+            </textarea>
+        </div>
+    </div>
+    <div class="row my-5">
+        <div class="col-6">
+            <div class="form-group col-sm">
+                <button id="saveCT_btn" type="button" class="btn btn-primary">ثبت</button>
+                <button id="clear_btn" type="button" class="btn btn-secondary">پاک کردن</button>
+            </div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+@section Scripts{
+    <script src="~/assets/plugins/custom/tinymce/tinymce.bundle.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            PageLoader.hide();
+            const config = {
+                selector: 'textarea#editor',
+                width: "100%",
+                height: 500,
+                resize: false,
+                autosave_ask_before_unload: false,
+                powerpaste_allow_local_images: true,
+                plugins: [
+                    'advlist', 'anchor', 'autolink', 'codesample', 'fullscreen', 'help',
+                    'lists', 'link', 'preview',
+                    'searchreplace', 'table', 'visualblocks', 'wordcount', 'directionality', 'hr'
+                ],
+                toolbar: 'insertfile a11ycheck undo redo | bold italic | forecolor backcolor | ltr rtl | hr | codesample | alignleft aligncenter alignright alignjustify | bullist numlist | signatureTag | financialItemMenu',
+                spellchecker_dialog: true,
+                spellchecker_ignore_list: ['Ephox', 'Moxiecode'],
+                tinydrive_demo_files_url: '../_images/tiny-drive-demo/demo_files.json',
+                tinydrive_token_provider: (success, failure) => {
+                    success({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huZG9lIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Ks_BdfH4CWilyzLNk8S2gDARFhuxIauLa8PwhdEQhEo' });
+                },
+                content_style: 'body { font-family:Tahoma ,sans-serif !important; font-size:12pt; text-align: right; direction: rtl; }',
+                menubar: true,
+                content_css: "document",
+                skin: "oxide-dark",
+                statusbar: false,
+                setup: function(editor){
+                    editor.ui.registry.addButton('signatureTag', {
+                        text: 'درج محل امضاء',
+                        tooltip: 'درج تگ اختصاصی در متن برای محل امضاء',
+                        onAction: function(){
+                            editor.insertContent(
+                                '<p class="contract-signatures"><span style="font-size: 12pt;">امضاء کارفرما و مهر کارگاه&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;امضاء و اثرانگشت طرف قرارداد</span></p>'
+                            );
+                        }
+                    });
+                    editor.ui.registry.addMenuButton('financialItemMenu', {
+                        text: 'درج آیتمهای قرارداد',
+                        icon: 'checkmark',
+                        fetch: function(callback){
+
+                            const items = [
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج نام کامل همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.FullName}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج کدپرسنلی همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.PersonnelCode}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج کدملی همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.NationalCode}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج نام پدر همکار ',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.FatherName}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج شماره شناسنامه همکار ',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.BirthCetificateNumber}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج محل صدور شناسنامه همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.PlaceOfIssueanceOfBirthCertification}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج محل تولد همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.PlaceBirth}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج تعداد فرزندان همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.NumberOfChildren}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج آدرس همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.Address}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج شماره موبایل همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.MobileNumber}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج تاریخ تولد همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.BirthDate}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج وضعیت تاهل همکار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.MaritalStatus}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج نام شرکت کارفرما',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Membership.CompanyName}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج نام مدیرعامل شرکت کارفرما',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Membership.CEO}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج آدرس شرکت کارفرما',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Membership.Address}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج کدپستی شرکت کارفرما',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Membership.PostalCode}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج شماره موبایل مدیرعامل',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Membership.CEOMobile}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج شعبه',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{JobLocation.Branch}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج عنوان شغلی',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Profession.jobName}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج نوع قرارداد',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{EmploymentContract.EmploymentContractType}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج شماره قرارداد',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{EmploymentContract.ContractNumber}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج تاریخ شروع قرارداد',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{EmploymentContract.StartDate}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج تاریخ پایان قرارداد',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{EmploymentContract.EndDate}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج تاریخ امضای قرارداد',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{EmploymentContract.SignatureCompleteAtUtc}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج حقوق مبنا',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.BaseSalary}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج پایه سنوات',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.YearsBase}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج حق مسکن',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.HousingBonous}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج اقلام مصرفی خانوار',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.WorkerBonous}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج حق مسئولیت ',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.ResponsibilitySalary}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج حق تاهل',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.MartialBonous}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج حق فرزند',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.ChildrenBonous}} </span>'
+                                        );
+                                    }
+                                },
+                                {
+                                    type: 'menuitem',
+                                    text: 'درج مجموع',
+                                    onAction: function(){
+                                        editor.insertContent(
+                                            '<span> {{Employee.Total}} </span>'
+                                        );
+                                    }
+                                },
+                            ];
+
+                            callback(items);
+                        }
+                    });
+                }
+            };
+
+            tinymce.init(config);
+    
+        });    
+
+        $('#saveCT_btn').on('click', function(){
+            var text = tinymce.get('editor').getContent();
+            var code = $('#code').val();
+
+            if(code != null || code == ''){
+                $.ajax({
+                    url: `${window.apiBaseUrl}/api/v1.0/contractManagement/saveCT`,
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ text: text, code: code }),
+                    success: function(res){
+                        if (res == ''){
+                            console.log("SaveContractTemplate succeeded");
+                            toastr.success("تغییرات با موفقیت ثبت گردید!");
+                        }
+                    },
+                    error: function(res){
+                        console.log(res.responseText);
+                    }
+                });
+            }else{
+                return;
+            }
+        });
+
+        $('#clear_btn').on('click', function(){
+            tinymce.get('editor').setContent('');
+            $('#code').val(0);
+        });
+
+        $('#code').on('change', function(){
+            PageLoader.show('در حال دریافت اطلاعات...');
+            var code = $('#code').val();
+
+            $.ajax({
+                url: `${window.apiBaseUrl}/api/v1.0/contractManagement/GetHRContractTemplate`,
+                type: 'GET',
+                data: { code: code },
+                success: function(res){
+                    tinymce.get('editor').setContent(res);
+                    PageLoader.hide();
+                },
+                error: function(){
+                    PageLoader.hide();
+                }
+            });
+        });
+    
+    </script>
+
+
+
+}

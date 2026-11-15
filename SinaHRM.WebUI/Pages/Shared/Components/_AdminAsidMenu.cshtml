@@ -160,7 +160,7 @@
 		</div>
 		<div class="menu-item">
 			<div class="menu-content pt-8 pb-2">
-				<span class="menu-section text-muted text-uppercase fs-8 ls-1">ساخته شده</span>
+				<span class="menu-section text-muted text-uppercase fs-8 ls-1">منابع انسانی</span>
 			</div>
 		</div>
 		<div id="pages" data-kt-menu-trigger="click" class="menu-item menu-accordion">
@@ -173,11 +173,31 @@
 			</span>
 			<div id="personnelList" class="menu-sub menu-sub-accordion menu-active-bg">
 				<div class="menu-item">
-					<a class="menu-link" asp-page="ContractManagement/PersonnelList">
+					<a class="menu-link" asp-page="/ContractManagement/PersonnelList">
 						<span class="menu-bullet">
 							<span class="bullet bullet-dot"></span>
 						</span>
 						<span class="menu-title">کارکنان و پرونده پرسنلی</span>
+					</a>
+				</div>
+			</div>
+			<div id="hrContracts" class="menu-sub menu-sub-accordion menu-active-bg">
+				<div class="menu-item">
+					<a class="menu-link" asp-page="/ContractManagement/HRContracts">
+						<span class="menu-bullet">
+							<span class="bullet bullet-dot"></span>
+						</span>
+						<span class="menu-title">مخزن قراردادها</span>
+					</a>
+				</div>
+			</div>
+			<div id="contractTemplate" class="menu-sub menu-sub-accordion menu-active-bg">
+				<div class="menu-item">
+					<a class="menu-link" asp-page="/ContractManagement/ContractTemplate">
+						<span class="menu-bullet">
+							<span class="bullet bullet-dot"></span>
+						</span>
+						<span class="menu-title">قالب قراردادهای منابع انسانی</span>
 					</a>
 				</div>
 			</div>
