@@ -14,5 +14,7 @@
   <Folder Name="/50.UI/">
     <Project Path="SinaHRM.WebUI/SinaHRM.WebUI.csproj" />
   </Folder>
-  <Folder Name="/60.Tests/" />
+  <Folder Name="/60.Tests/">
+    <Project Path="SinaHRM.Tests/SinaHRM.Tests.csproj" />
+  </Folder>
 </Solution>
