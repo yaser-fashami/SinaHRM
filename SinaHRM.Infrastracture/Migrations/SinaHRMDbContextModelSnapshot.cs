@@ -991,6 +991,37 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                 {
                     b.Navigation("Emploies");
                 });
+            modelBuilder.Entity("SinaHRM.Domain.Entities.WorkflowInboxMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("ReceivedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId")
+                        .IsUnique();
+
+                    b.ToTable("WorkflowInboxMessages", "Integration");
+                });
+
 #pragma warning restore 612, 618
         }
     }

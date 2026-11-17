@@ -28,6 +28,7 @@ public class SinaHRMDbContext : DbContext
     public DbSet<FinancialItemDefinition> FinancialItemDefinitions { get; set; }
     public DbSet<EmploymentContractFinancialItem> EmploymentContractFinancialItems { get; set; }
     public DbSet<FinancialItemCoefficient> FinancialItemCoefficients { get; set; }
+    public DbSet<WorkflowInboxMessage> WorkflowInboxMessages { get; set; }
     #endregion
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -52,6 +53,7 @@ public class SinaHRMDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FinancialItemDefinitionConfig());
         modelBuilder.ApplyConfiguration(new EmploymentContractFinancialItemConfig());
         modelBuilder.ApplyConfiguration(new FinancialItemCoefficientConfig());
+        modelBuilder.ApplyConfiguration(new WorkflowInboxMessageConfig());
 
     }
 }

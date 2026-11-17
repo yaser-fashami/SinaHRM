@@ -4,6 +4,8 @@ using Microsoft.OpenApi;
 using SinaHRM.Application.Abstractions.Persistence;
 using SinaHRM.Application.ContractManagement.Interfaces;
 using SinaHRM.Application.ContractManagement.Services;
+using SinaHRM.Application.Abstractions.Persistence;
+using SinaHRM.Application.Integrations.WorkflowEngine.Services;
 using SinaHRM.Infrastracture;
 using SinaHRM.Infrastracture.Data.Sql.Repositories;
 
@@ -67,6 +69,8 @@ builder.Services.AddSingleton<IHtmlTemplateService, HtmlTemplateService>();
 builder.Services.AddScoped<IContractManagementRepository, ContractManegementRepository>();
 builder.Services.AddScoped<IContractManagementService, ContractManagementService>();
 builder.Services.AddScoped<IEmploymentContractRepository, EmploymentContractRepository>();
+builder.Services.AddScoped<IWorkflowInboxRepository, WorkflowInboxRepository>();
+builder.Services.AddScoped<WorkflowInboxService>();
 
 var app = builder.Build();
 

@@ -12,5 +12,9 @@ public sealed record WorkflowCompletedEvent
 
     public required DateTimeOffset CompletedAtUtc { get; init; }
 
-    public required string DocumentHash { get; init; }
+    public string? DocumentId { get; init; }
+
+    public string? DocumentVersion { get; init; }
+
+    public string? DocumentHash { get; init; }
 }
