@@ -1,4 +1,3 @@
-using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -82,26 +81,29 @@ public sealed class WorkflowInboxRepositoryTests
     }
 
     [Fact]
-    public async Task RecordAsync_ConcurrentSameEventIdAndPayload_ShouldAcceptOnceAndReturnDuplicateForOtherRequest()
+    public async Task RecordAsync_ConcurrentInsertBetweenReadAndSave_ShouldReturnDuplicate()
     {
         await using var database = await WorkflowInboxTestDatabase.CreateAsync();
         var eventId = Guid.NewGuid();
         const string payload = """{"event":"completed"}""";
-        var barrier = new ConcurrentInboxReadBarrier();
 
-        await using var firstContext = database.CreateDbContext(barrier);
-        await using var secondContext = database.CreateDbContext(barrier);
+        var competingInsert = new ConcurrentInboxInsertInterceptor(async cancellationToken =>
+        {
+            await using var competingContext = database.CreateDbContext();
+            competingContext.WorkflowInboxMessages.Add(CreateMessage(eventId, payload));
+            await competingContext.SaveChangesAsync(cancellationToken);
+        });
 
-        var firstRepository = new WorkflowInboxRepository(firstContext);
-        var secondRepository = new WorkflowInboxRepository(secondContext);
+        await using var dbContext = database.CreateDbContext(competingInsert);
+        var repository = new WorkflowInboxRepository(dbContext);
 
-        var results = await Task.WhenAll(
-            firstRepository.RecordAsync(CreateMessage(eventId, payload), CancellationToken.None),
-            secondRepository.RecordAsync(CreateMessage(eventId, payload), CancellationToken.None));
+        // Simulate another request winning the unique EventId insert after this
+        // request's initial lookup but before its SaveChanges call.
+        var result = await repository.RecordAsync(
+            CreateMessage(eventId, payload),
+            CancellationToken.None);
 
-        Assert.Equal(
-            new[] { WorkflowInboxRecordOutcome.Accepted, WorkflowInboxRecordOutcome.Duplicate },
-            results.OrderBy(x => x).ToArray());
+        Assert.Equal(WorkflowInboxRecordOutcome.Duplicate, result);
 
         await using var verificationContext = database.CreateDbContext();
         Assert.Equal(1, await verificationContext.WorkflowInboxMessages.CountAsync());
@@ -156,29 +158,24 @@ internal sealed class WorkflowInboxTestDatabase : IAsyncDisposable
     public ValueTask DisposeAsync() => _keeperConnection.DisposeAsync();
 }
 
-internal sealed class ConcurrentInboxReadBarrier : DbCommandInterceptor
+internal sealed class ConcurrentInboxInsertInterceptor : SaveChangesInterceptor
 {
-    private readonly TaskCompletionSource<bool> _bothReadsReached =
-        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly Func<CancellationToken, Task> _insertCompetingMessage;
+    private int _hasInserted;
 
-    private int _arrivals;
+    public ConcurrentInboxInsertInterceptor(
+        Func<CancellationToken, Task> insertCompetingMessage)
+    {
+        _insertCompetingMessage = insertCompetingMessage;
+    }
 
-    public override async ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(
-        DbCommand command,
-        CommandEventData eventData,
-        InterceptionResult<DbDataReader> result,
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        if (command.CommandText.Contains(
-                "WorkflowInboxMessages",
-                StringComparison.OrdinalIgnoreCase) &&
-            Interlocked.Increment(ref _arrivals) <= 2)
-        {
-            if (Volatile.Read(ref _arrivals) == 2)
-                _bothReadsReached.TrySetResult(true);
-
-            await _bothReadsReached.Task.WaitAsync(cancellationToken);
-        }
+        if (Interlocked.Exchange(ref _hasInserted, 1) == 0)
+            await _insertCompetingMessage(cancellationToken);
 
         return result;
     }
