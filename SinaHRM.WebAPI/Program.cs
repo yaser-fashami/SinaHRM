@@ -4,7 +4,6 @@ using Microsoft.OpenApi;
 using SinaHRM.Application.Abstractions.Persistence;
 using SinaHRM.Application.ContractManagement.Interfaces;
 using SinaHRM.Application.ContractManagement.Services;
-using SinaHRM.Application.Abstractions.Persistence;
 using SinaHRM.Application.Integrations.WorkflowEngine.Services;
 using SinaHRM.Infrastracture;
 using SinaHRM.Infrastracture.Data.Sql.Repositories;
