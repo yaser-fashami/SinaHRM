@@ -158,7 +158,7 @@ internal sealed class WorkflowInboxTestDatabase : IAsyncDisposable
 
 internal sealed class ConcurrentInboxReadBarrier : DbCommandInterceptor
 {
-    private readonly TaskCompletionSource _bothReadsReached =
+    private readonly TaskCompletionSource<bool> _bothReadsReached =
         new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     private int _arrivals;
@@ -175,7 +175,7 @@ internal sealed class ConcurrentInboxReadBarrier : DbCommandInterceptor
             Interlocked.Increment(ref _arrivals) <= 2)
         {
             if (Volatile.Read(ref _arrivals) == 2)
-                _bothReadsReached.TrySetResult();
+                _bothReadsReached.TrySetResult(true);
 
             await _bothReadsReached.Task.WaitAsync(cancellationToken);
         }
