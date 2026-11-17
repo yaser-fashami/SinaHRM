@@ -138,8 +138,19 @@ internal sealed class WorkflowInboxTestDatabase : IAsyncDisposable
         await keeperConnection.OpenAsync();
 
         var database = new WorkflowInboxTestDatabase(connectionString, keeperConnection);
-        await using var dbContext = database.CreateDbContext();
-        await dbContext.Database.EnsureCreatedAsync();
+        await using var command = keeperConnection.CreateCommand();
+        command.CommandText = """
+            CREATE TABLE "WorkflowInboxMessages" (
+                "Id" INTEGER NOT NULL CONSTRAINT "PK_WorkflowInboxMessages" PRIMARY KEY AUTOINCREMENT,
+                "EventId" TEXT NOT NULL,
+                "PayloadJson" TEXT NOT NULL,
+                "Status" TEXT NOT NULL,
+                "ReceivedAtUtc" TEXT NOT NULL
+            );
+            CREATE UNIQUE INDEX "IX_WorkflowInboxMessages_EventId"
+                ON "WorkflowInboxMessages" ("EventId");
+            """;
+        await command.ExecuteNonQueryAsync();
 
         return database;
     }
