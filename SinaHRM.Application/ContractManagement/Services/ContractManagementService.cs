@@ -101,7 +101,7 @@ public class ContractManagementService : IContractManagementService
                 }
                 else
                 {
-                    lastContractEndDate.Value.AddDays(1);
+                    lastContractEndDate = lastContractEndDate.Value.AddDays(1);
                 }
                 contract.EmployeeId = employee.Id;
                 contract.DisplayEmployee = new Employee
