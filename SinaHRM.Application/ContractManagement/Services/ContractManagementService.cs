@@ -246,7 +246,7 @@ public class ContractManagementService : IContractManagementService
             { "Employee.HousingBonous", employee.HousingBonous?.ToString("N0", CultureInfo.InvariantCulture) ?? "0" },  
             { "Employee.WorkerBonous", employee.WorkerBonous?.ToString("N0", CultureInfo.InvariantCulture) ?? "0" },
             { "Employee.ResponsibilitySalary", employee.ResponsibilitySalary?.ToString("N0", CultureInfo.InvariantCulture) ?? "0" },
-            { "Employee.MartialBonous", employee.WorkerBonous?.ToString("N0", CultureInfo.InvariantCulture) ?? "0"  },
+            { "Employee.MartialBonous", employee.MartialBonous?.ToString("N0", CultureInfo.InvariantCulture) ?? "0"  },
             { "Employee.ChildrenBonous", employee.ChildrenBonous?.ToString("N0", CultureInfo.InvariantCulture) ?? "0" },
             { "Employee.Total", employee.TotalSalary.ToString("N0", CultureInfo.InvariantCulture) }
         };
