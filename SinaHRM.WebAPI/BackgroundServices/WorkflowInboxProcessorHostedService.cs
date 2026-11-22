@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SinaHRM.Application.Abstractions.Persistence;
 using SinaHRM.Application.Integrations.WorkflowEngine.Contracts;
 using SinaHRM.Application.Integrations.WorkflowEngine.Services;
+using SinaHRM.Domain.Entities;
 
 namespace SinaHRM.WebAPI.BackgroundServices;
 
@@ -103,7 +104,7 @@ public sealed class WorkflowInboxProcessorHostedService : BackgroundService
 
     private async Task ScheduleRetryAsync(
         IWorkflowInboxRepository repository,
-        Domain.Entities.WorkflowInboxMessage message,
+        WorkflowInboxMessage message,
         Exception exception,
         CancellationToken cancellationToken)
     {
