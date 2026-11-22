@@ -8,7 +8,7 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations;
 
 [DbContext(typeof(SinaHRMDbContext))]
 [Migration("20261122150000_AddInboxTotalAttemptCount")]
-public sealed class AddInboxTotalAttemptCount : Migration
+public partial class AddInboxTotalAttemptCount : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
