@@ -37,6 +37,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             UPDATE [Candidates]
             SET [Status] = N'Processing', [LeaseToken] = NEWID(), [LeaseExpiresAtUtc] = {leaseExpiresAtUtc},
                 [AttemptCount] = CASE WHEN [Status] = N'Pending' THEN [AttemptCount] + 1 ELSE [AttemptCount] END,
+                [TotalAttemptCount] = CASE WHEN [Status] = N'Pending' THEN [TotalAttemptCount] + 1 ELSE [TotalAttemptCount] END,
                 [LastAttemptAtUtc] = CASE WHEN [Status] = N'Pending' THEN {nowUtc} ELSE [LastAttemptAtUtc] END
             OUTPUT inserted.*;
             """).AsNoTracking().ToListAsync(cancellationToken);
