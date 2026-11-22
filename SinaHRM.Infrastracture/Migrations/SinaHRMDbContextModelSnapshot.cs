@@ -1033,6 +1033,9 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                     b.Property<DateTimeOffset?>("ProcessedAtUtc")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<DateTimeOffset?>("DeadLetterAtUtc")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<DateTimeOffset>("ReceivedAtUtc")
                         .HasColumnType("datetimeoffset");
 
