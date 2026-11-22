@@ -10,9 +10,7 @@ using SinaHRM.Infrastracture;
 #nullable disable
 
 namespace SinaHRM.Infrastracture.Data.Sql.Migrations
-{
-    [DbContext(typeof(SinaHRMDbContext))]
-    partial class AddInboxTotalAttemptCount
+{\npartial class AddInboxTotalAttemptCount
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
