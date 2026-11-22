@@ -63,7 +63,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 ///IoC
 builder.Services.AddSingleton<IPersianDatePeriodService, PersianDatePeriodService>();
 builder.Services.AddSingleton<IHtmlTemplateService, HtmlTemplateService>();
@@ -72,7 +71,9 @@ builder.Services.AddScoped<IContractManagementService, ContractManagementService
 builder.Services.AddScoped<IEmploymentContractRepository, EmploymentContractRepository>();
 builder.Services.AddScoped<IWorkflowInboxRepository, WorkflowInboxRepository>();
 builder.Services.AddScoped<WorkflowInboxService>();
+builder.Services.AddScoped<WorkflowInboxProcessor>();
 builder.Services.AddHostedService<WorkflowInboxReaperHostedService>();
+builder.Services.AddHostedService<WorkflowInboxProcessorHostedService>();
 
 var app = builder.Build();
 
