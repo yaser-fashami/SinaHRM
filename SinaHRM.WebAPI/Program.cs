@@ -25,6 +25,7 @@ builder.Services.AddDbContext<SinaHRMDbContext>(c => c.UseSqlServer(conStr, c =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 
 builder.Services.AddApiVersioning(options =>
 {
