@@ -2,11 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using SinaHRM.Application.Abstractions.Persistence;
 using SinaHRM.Application.Integrations.WorkflowEngine.Contracts;
 using SinaHRM.Domain.Entities;
+using SinaHRM.Domain.Enums;
+
 namespace SinaHRM.Infrastracture.Data.Sql.Repositories;
+
 public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
 {
     private readonly SinaHRMDbContext _dbContext;
     public WorkflowInboxRepository(SinaHRMDbContext dbContext) => _dbContext = dbContext;
+
     public async Task<WorkflowInboxRecordOutcome> RecordAsync(WorkflowInboxMessage message, CancellationToken cancellationToken)
     {
         var existing = await FindByEventIdAsync(message.EventId, cancellationToken);
@@ -21,6 +25,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             return ComparePayload(existing, message);
         }
     }
+
     public async Task<IReadOnlyList<WorkflowInboxMessage>> ClaimBatchAsync(int batchSize, DateTimeOffset nowUtc, DateTimeOffset leaseExpiresAtUtc, int maxAttempts, CancellationToken cancellationToken)
     {
         ValidateClaimArguments(batchSize, nowUtc, leaseExpiresAtUtc, maxAttempts);
@@ -42,6 +47,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             OUTPUT inserted.*;
             """).AsNoTracking().ToListAsync(cancellationToken);
     }
+
     public async Task<bool> MarkProcessedAsync(Guid eventId, Guid leaseToken, DateTimeOffset processedAtUtc, CancellationToken cancellationToken)
     {
         ValidateLease(eventId, leaseToken, processedAtUtc);
@@ -52,6 +58,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             """, cancellationToken);
         return affected == 1;
     }
+
     public async Task<bool> ScheduleRetryAsync(Guid eventId, Guid leaseToken, DateTimeOffset nextAttemptAtUtc, string error, int maxAttempts, CancellationToken cancellationToken)
     {
         ValidateLease(eventId, leaseToken, nextAttemptAtUtc);
@@ -67,6 +74,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             """, cancellationToken);
         return affected == 1;
     }
+
     public async Task<bool> MoveToDeadLetterAsync(Guid eventId, Guid leaseToken, string error, CancellationToken cancellationToken)
     {
         ValidateIds(eventId, leaseToken);
@@ -79,6 +87,94 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             """, cancellationToken);
         return affected == 1;
     }
+
+    public async Task<WorkflowInboxCompletionOutcome> ProcessCompletionAsync(
+        int contractId,
+        Guid workflowInstanceId,
+        DateTimeOffset completedAtUtc,
+        Guid eventId,
+        Guid leaseToken,
+        DateTimeOffset processedAtUtc,
+        CancellationToken cancellationToken)
+    {
+        if (contractId <= 0) throw new ArgumentOutOfRangeException(nameof(contractId));
+        if (workflowInstanceId == Guid.Empty) throw new ArgumentException("WorkflowInstanceId is required.", nameof(workflowInstanceId));
+        ValidateLease(eventId, leaseToken, processedAtUtc);
+        EnsureUtc(completedAtUtc, nameof(completedAtUtc));
+
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        var changed = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
+            UPDATE [Contract].[EmploymentContracts]
+            SET [Status] = N'Signed', [SignatureCompletedAtUtc] = {completedAtUtc}
+            WHERE [Id] = {contractId}
+                AND [WorkflowInstanceId] = {workflowInstanceId}
+                AND [Status] = N'PendingSignature'
+                AND [SignatureCompletedAtUtc] IS NULL
+                AND [IsDelete] = 0;
+            """, cancellationToken);
+
+        var outcome = WorkflowInboxCompletionOutcome.Processed;
+        if (changed == 0)
+        {
+            var contract = await _dbContext.EmploymentContracts
+                .AsNoTracking()
+                .Where(x => x.Id == contractId && !x.IsDelete)
+                .Select(x => new { x.WorkflowInstanceId, x.Status, x.SignatureCompletedAtUtc })
+                .SingleOrDefaultAsync(cancellationToken);
+
+            if (contract?.WorkflowInstanceId == workflowInstanceId &&
+                contract.SignatureCompletedAtUtc is not null &&
+                (contract.Status == EmploymentContractStatus.Signed || contract.Status == EmploymentContractStatus.Active))
+            {
+                // A different completion event already won for this contract. Preserve first-wins semantics.
+                outcome = WorkflowInboxCompletionOutcome.AlreadyCompleted;
+            }
+            else
+            {
+                var deadLetterError = contract is null
+                    ? "Employment contract was not found."
+                    : contract.WorkflowInstanceId != workflowInstanceId
+                        ? "WorkflowInstanceId does not match the employment contract."
+                        : "Employment contract is not in PendingSignature state.";
+
+                var deadLettered = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
+                    UPDATE [Integration].[WorkflowInboxMessages]
+                    SET [Status] = N'DeadLetter', [LastError] = {deadLetterError},
+                        [DeadLetterAtUtc] = {processedAtUtc}, [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL
+                    WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken}
+                        AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > {processedAtUtc};
+                    """, cancellationToken);
+
+                if (deadLettered != 1)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return WorkflowInboxCompletionOutcome.LeaseLost;
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+                return WorkflowInboxCompletionOutcome.InvalidContractState;
+            }
+        }
+
+        var processed = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
+            UPDATE [Integration].[WorkflowInboxMessages]
+            SET [Status] = N'Processed', [ProcessedAtUtc] = {processedAtUtc},
+                [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL, [LastError] = NULL
+            WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken}
+                AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > {processedAtUtc};
+            """, cancellationToken);
+
+        if (processed != 1)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return WorkflowInboxCompletionOutcome.LeaseLost;
+        }
+
+        await transaction.CommitAsync(cancellationToken);
+        return outcome;
+    }
+
     public async Task<bool> ReplayDeadLetterAsync(Guid eventId, DateTimeOffset replayedAtUtc, CancellationToken cancellationToken)
     {
         if (eventId == Guid.Empty) throw new ArgumentException("EventId is required.", nameof(eventId));
@@ -91,6 +187,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             """, cancellationToken);
         return affected == 1;
     }
+
     public async Task<int> ReapExpiredLeasesAsync(int batchSize, int maxAttempts, DateTimeOffset nowUtc, CancellationToken cancellationToken)
     {
         if (batchSize <= 0) throw new ArgumentOutOfRangeException(nameof(batchSize));
@@ -114,10 +211,13 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
                 [LeaseExpiresAtUtc] = NULL;
             """, cancellationToken);
     }
+
     private Task<WorkflowInboxMessage?> FindByEventIdAsync(Guid eventId, CancellationToken cancellationToken)
         => _dbContext.WorkflowInboxMessages.AsNoTracking().SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+
     private static WorkflowInboxRecordOutcome ComparePayload(WorkflowInboxMessage existing, WorkflowInboxMessage incoming)
         => string.Equals(existing.PayloadJson, incoming.PayloadJson, StringComparison.Ordinal) ? WorkflowInboxRecordOutcome.Duplicate : WorkflowInboxRecordOutcome.Conflict;
+
     private static void ValidateClaimArguments(int batchSize, DateTimeOffset nowUtc, DateTimeOffset leaseExpiresAtUtc, int maxAttempts)
     {
         if (batchSize <= 0) throw new ArgumentOutOfRangeException(nameof(batchSize));
@@ -125,19 +225,23 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
         EnsureUtc(nowUtc, nameof(nowUtc)); EnsureUtc(leaseExpiresAtUtc, nameof(leaseExpiresAtUtc));
         if (leaseExpiresAtUtc <= nowUtc) throw new ArgumentException("Lease expiration must be later than claim time.", nameof(leaseExpiresAtUtc));
     }
+
     private static void ValidateLease(Guid eventId, Guid leaseToken, DateTimeOffset timestamp)
     {
         ValidateIds(eventId, leaseToken); EnsureUtc(timestamp, nameof(timestamp));
     }
+
     private static void ValidateIds(Guid eventId, Guid leaseToken)
     {
         if (eventId == Guid.Empty) throw new ArgumentException("EventId is required.", nameof(eventId));
         if (leaseToken == Guid.Empty) throw new ArgumentException("LeaseToken is required.", nameof(leaseToken));
     }
+
     private static void EnsureUtc(DateTimeOffset value, string name)
     {
         if (value.Offset != TimeSpan.Zero) throw new ArgumentException("Timestamp must be UTC.", name);
     }
+
     private static string NormalizeError(string error)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(error);
