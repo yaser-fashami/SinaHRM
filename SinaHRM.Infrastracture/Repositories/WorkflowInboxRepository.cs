@@ -42,6 +42,67 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
         }
     }
 
+    public async Task<IReadOnlyList<WorkflowInboxMessage>> ClaimBatchAsync(
+        int batchSize,
+        DateTimeOffset nowUtc,
+        DateTimeOffset leaseExpiresAtUtc,
+        int maxAttempts,
+        CancellationToken cancellationToken)
+    {
+        ValidateClaimArguments(batchSize, nowUtc, leaseExpiresAtUtc, maxAttempts);
+
+        // Pending messages begin a new processing attempt. Reclaiming an expired lease
+        // resumes the same attempt and does not increment AttemptCount.
+        return await _dbContext.WorkflowInboxMessages
+            .FromSqlInterpolated($"""
+                ;WITH [Candidates] AS
+                (
+                    SELECT TOP ({batchSize}) *
+                    FROM [Integration].[WorkflowInboxMessages]
+                        WITH (UPDLOCK, READPAST, READCOMMITTEDLOCK)
+                    WHERE
+                        (
+                            (
+                                [Status] = N'Pending'
+                                AND [NextAttemptAtUtc] <= {nowUtc}
+                            )
+                            OR
+                            (
+                                [Status] = N'Processing'
+                                AND [LeaseExpiresAtUtc] <= {nowUtc}
+                            )
+                        )
+                        AND [AttemptCount] < {maxAttempts}
+                    ORDER BY
+                        CASE
+                            WHEN [Status] = N'Pending'
+                                THEN [NextAttemptAtUtc]
+                            ELSE [LeaseExpiresAtUtc]
+                        END,
+                        [ReceivedAtUtc],
+                        [Id]
+                )
+                UPDATE [Candidates]
+                SET
+                    [Status] = N'Processing',
+                    [LeaseToken] = NEWID(),
+                    [LeaseExpiresAtUtc] = {leaseExpiresAtUtc},
+                    [AttemptCount] = CASE
+                        WHEN [Status] = N'Pending'
+                            THEN [AttemptCount] + 1
+                        ELSE [AttemptCount]
+                    END,
+                    [LastAttemptAtUtc] = CASE
+                        WHEN [Status] = N'Pending'
+                            THEN {nowUtc}
+                        ELSE [LastAttemptAtUtc]
+                    END
+                OUTPUT inserted.*;
+                """)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
     private Task<WorkflowInboxMessage?> FindByEventIdAsync(
         Guid eventId,
         CancellationToken cancellationToken)
@@ -61,5 +122,26 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
             StringComparison.Ordinal)
             ? WorkflowInboxRecordOutcome.Duplicate
             : WorkflowInboxRecordOutcome.Conflict;
+    }
+
+    private static void ValidateClaimArguments(
+        int batchSize,
+        DateTimeOffset nowUtc,
+        DateTimeOffset leaseExpiresAtUtc,
+        int maxAttempts)
+    {
+        if (batchSize <= 0)
+            throw new ArgumentOutOfRangeException(nameof(batchSize));
+
+        if (maxAttempts <= 0)
+            throw new ArgumentOutOfRangeException(nameof(maxAttempts));
+
+        if (leaseExpiresAtUtc <= nowUtc)
+            throw new ArgumentException(
+                "Lease expiration must be later than the claim time.",
+                nameof(leaseExpiresAtUtc));
+
+        if (nowUtc.Offset != TimeSpan.Zero || leaseExpiresAtUtc.Offset != TimeSpan.Zero)
+            throw new ArgumentException("Claim timestamps must be UTC.");
     }
 }
