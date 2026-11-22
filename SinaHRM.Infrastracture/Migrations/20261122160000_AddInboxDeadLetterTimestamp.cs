@@ -8,7 +8,7 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations;
 
 [DbContext(typeof(SinaHRMDbContext))]
 [Migration("20261122160000_AddInboxDeadLetterTimestamp")]
-public sealed class AddInboxDeadLetterTimestamp : Migration
+public partial class AddInboxDeadLetterTimestamp : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
