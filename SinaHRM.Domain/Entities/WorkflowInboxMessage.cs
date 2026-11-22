@@ -34,6 +34,8 @@ public sealed class WorkflowInboxMessage
 
     public DateTimeOffset? ProcessedAtUtc { get; private set; }
 
+    public DateTimeOffset? DeadLetterAtUtc { get; private set; }
+
     public static WorkflowInboxMessage Create(
         Guid eventId,
         string payloadJson,
