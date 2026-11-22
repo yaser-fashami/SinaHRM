@@ -27,7 +27,30 @@ public sealed class WorkflowInboxMessageConfig : IEntityTypeConfiguration<Workfl
         builder.Property(x => x.ReceivedAtUtc)
             .IsRequired();
 
+        builder.Property(x => x.AttemptCount)
+            .IsRequired();
+
+        builder.Property(x => x.NextAttemptAtUtc)
+            .IsRequired();
+
+        builder.Property(x => x.LeaseToken);
+
+        builder.Property(x => x.LeaseExpiresAtUtc);
+
+        builder.Property(x => x.LastAttemptAtUtc);
+
+        builder.Property(x => x.LastError)
+            .HasMaxLength(4000);
+
+        builder.Property(x => x.ProcessedAtUtc);
+
         builder.HasIndex(x => x.EventId)
             .IsUnique();
+
+        builder.HasIndex(x => new { x.Status, x.NextAttemptAtUtc })
+            .HasDatabaseName("IX_WorkflowInboxMessages_Status_NextAttemptAtUtc");
+
+        builder.HasIndex(x => new { x.Status, x.LeaseExpiresAtUtc })
+            .HasDatabaseName("IX_WorkflowInboxMessages_Status_LeaseExpiresAtUtc");
     }
 }
