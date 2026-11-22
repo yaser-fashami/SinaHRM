@@ -60,7 +60,9 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
         var affected = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
             UPDATE [Integration].[WorkflowInboxMessages]
             SET [Status] = CASE WHEN [AttemptCount] >= {maxAttempts} THEN N'DeadLetter' ELSE N'Pending' END,
-                [NextAttemptAtUtc] = {nextAttemptAtUtc}, [LastError] = {safeError}, [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL
+                [NextAttemptAtUtc] = {nextAttemptAtUtc}, [LastError] = {safeError},
+                [DeadLetterAtUtc] = CASE WHEN [AttemptCount] >= {maxAttempts} THEN SYSUTCDATETIME() ELSE [DeadLetterAtUtc] END,
+                [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL
             WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken} AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > SYSUTCDATETIME();
             """, cancellationToken);
         return affected == 1;
@@ -71,7 +73,8 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
         var safeError = NormalizeError(error);
         var affected = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
             UPDATE [Integration].[WorkflowInboxMessages]
-            SET [Status] = N'DeadLetter', [LastError] = {safeError}, [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL
+            SET [Status] = N'DeadLetter', [LastError] = {safeError}, [DeadLetterAtUtc] = SYSUTCDATETIME(),
+                [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL
             WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken} AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > SYSUTCDATETIME();
             """, cancellationToken);
         return affected == 1;
