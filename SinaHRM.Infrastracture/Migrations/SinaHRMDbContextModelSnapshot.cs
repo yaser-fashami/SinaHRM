@@ -1002,6 +1002,9 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                     b.Property<int>("AttemptCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalAttemptCount")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
 
