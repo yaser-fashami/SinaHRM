@@ -48,6 +48,8 @@ public sealed class WorkflowInboxMessageConfig : IEntityTypeConfiguration<Workfl
 
         builder.Property(x => x.ProcessedAtUtc);
 
+        builder.Property(x => x.DeadLetterAtUtc);
+
         builder.HasIndex(x => x.EventId)
             .IsUnique();
 
