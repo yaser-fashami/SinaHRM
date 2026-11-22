@@ -8,4 +8,11 @@ public interface IWorkflowInboxRepository
     Task<WorkflowInboxRecordOutcome> RecordAsync(
         WorkflowInboxMessage message,
         CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<WorkflowInboxMessage>> ClaimBatchAsync(
+        int batchSize,
+        DateTimeOffset nowUtc,
+        DateTimeOffset leaseExpiresAtUtc,
+        int maxAttempts,
+        CancellationToken cancellationToken);
 }
