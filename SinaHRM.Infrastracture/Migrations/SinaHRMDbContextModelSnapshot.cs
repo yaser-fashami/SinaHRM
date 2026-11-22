@@ -1019,7 +1019,9 @@ namespace SinaHRM.Infrastracture.Data.Sql.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("NextAttemptAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
 
                     b.Property<string>("PayloadJson")
                         .IsRequired()
