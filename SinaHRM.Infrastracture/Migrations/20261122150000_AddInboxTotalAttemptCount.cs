@@ -19,6 +19,8 @@ public partial class AddInboxTotalAttemptCount : Migration
             type: "int",
             nullable: false,
             defaultValue: 0);
+
+        migrationBuilder.Sql("UPDATE [Integration].[WorkflowInboxMessages] SET [TotalAttemptCount] = [AttemptCount];");
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
