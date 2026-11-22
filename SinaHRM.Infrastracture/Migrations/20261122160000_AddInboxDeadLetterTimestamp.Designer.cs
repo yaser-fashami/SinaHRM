@@ -10,9 +10,7 @@ using SinaHRM.Infrastracture;
 #nullable disable
 
 namespace SinaHRM.Infrastracture.Data.Sql.Migrations
-{
-    [DbContext(typeof(SinaHRMDbContext))]
-    partial class AddInboxDeadLetterTimestamp
+{\npartial class AddInboxDeadLetterTimestamp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
