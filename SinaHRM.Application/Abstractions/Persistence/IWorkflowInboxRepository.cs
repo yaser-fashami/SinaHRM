@@ -8,4 +8,6 @@ public interface IWorkflowInboxRepository
     Task<bool> MarkProcessedAsync(Guid eventId, Guid leaseToken, DateTimeOffset processedAtUtc, CancellationToken cancellationToken);
     Task<bool> ScheduleRetryAsync(Guid eventId, Guid leaseToken, DateTimeOffset nextAttemptAtUtc, string error, int maxAttempts, CancellationToken cancellationToken);
     Task<bool> MoveToDeadLetterAsync(Guid eventId, Guid leaseToken, string error, CancellationToken cancellationToken);
+    Task<bool> ReplayDeadLetterAsync(Guid eventId, DateTimeOffset replayedAtUtc, CancellationToken cancellationToken);
+    Task<int> ReapExpiredLeasesAsync(int batchSize, int maxAttempts, DateTimeOffset nowUtc, CancellationToken cancellationToken);
 }
