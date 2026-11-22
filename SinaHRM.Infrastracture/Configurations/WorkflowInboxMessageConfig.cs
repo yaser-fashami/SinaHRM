@@ -31,6 +31,7 @@ public sealed class WorkflowInboxMessageConfig : IEntityTypeConfiguration<Workfl
             .IsRequired();
 
         builder.Property(x => x.NextAttemptAtUtc)
+            .HasDefaultValueSql("SYSUTCDATETIME()")
             .IsRequired();
 
         builder.Property(x => x.LeaseToken);
