@@ -18,6 +18,20 @@ public sealed class WorkflowInboxMessage
 
     public DateTimeOffset ReceivedAtUtc { get; private set; }
 
+    public int AttemptCount { get; private set; }
+
+    public DateTimeOffset NextAttemptAtUtc { get; private set; }
+
+    public Guid? LeaseToken { get; private set; }
+
+    public DateTimeOffset? LeaseExpiresAtUtc { get; private set; }
+
+    public DateTimeOffset? LastAttemptAtUtc { get; private set; }
+
+    public string? LastError { get; private set; }
+
+    public DateTimeOffset? ProcessedAtUtc { get; private set; }
+
     public static WorkflowInboxMessage Create(
         Guid eventId,
         string payloadJson,
@@ -35,7 +49,9 @@ public sealed class WorkflowInboxMessage
             EventId = eventId,
             PayloadJson = payloadJson,
             Status = WorkflowInboxStatus.Pending,
-            ReceivedAtUtc = receivedAtUtc
+            ReceivedAtUtc = receivedAtUtc,
+            AttemptCount = 0,
+            NextAttemptAtUtc = receivedAtUtc
         };
     }
 }
