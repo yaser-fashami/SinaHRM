@@ -54,7 +54,7 @@ public sealed class WorkflowInboxRepository : IWorkflowInboxRepository
         var affected = await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
             UPDATE [Integration].[WorkflowInboxMessages]
             SET [Status] = N'Processed', [ProcessedAtUtc] = {processedAtUtc}, [LeaseToken] = NULL, [LeaseExpiresAtUtc] = NULL, [LastError] = NULL
-            WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken} AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > {processedAtUtc};
+            WHERE [EventId] = {eventId} AND [LeaseToken] = {leaseToken} AND [Status] = N'Processing' AND [LeaseExpiresAtUtc] > SYSUTCDATETIME();
             """, cancellationToken);
         return affected == 1;
     }
