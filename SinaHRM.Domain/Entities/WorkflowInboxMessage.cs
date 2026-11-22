@@ -20,6 +20,8 @@ public sealed class WorkflowInboxMessage
 
     public int AttemptCount { get; private set; }
 
+    public int TotalAttemptCount { get; private set; }
+
     public DateTimeOffset NextAttemptAtUtc { get; private set; }
 
     public Guid? LeaseToken { get; private set; }
@@ -51,6 +53,7 @@ public sealed class WorkflowInboxMessage
             Status = WorkflowInboxStatus.Pending,
             ReceivedAtUtc = receivedAtUtc,
             AttemptCount = 0,
+            TotalAttemptCount = 0,
             NextAttemptAtUtc = receivedAtUtc
         };
     }
