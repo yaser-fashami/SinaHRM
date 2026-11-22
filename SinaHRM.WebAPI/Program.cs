@@ -7,6 +7,7 @@ using SinaHRM.Application.ContractManagement.Services;
 using SinaHRM.Application.Integrations.WorkflowEngine.Services;
 using SinaHRM.Infrastracture;
 using SinaHRM.Infrastracture.Data.Sql.Repositories;
+using SinaHRM.WebAPI.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 string conStr = string.Empty;
@@ -70,6 +71,7 @@ builder.Services.AddScoped<IContractManagementService, ContractManagementService
 builder.Services.AddScoped<IEmploymentContractRepository, EmploymentContractRepository>();
 builder.Services.AddScoped<IWorkflowInboxRepository, WorkflowInboxRepository>();
 builder.Services.AddScoped<WorkflowInboxService>();
+builder.Services.AddHostedService<WorkflowInboxReaperHostedService>();
 
 var app = builder.Build();
 
