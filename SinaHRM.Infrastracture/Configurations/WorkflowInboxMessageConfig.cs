@@ -30,6 +30,9 @@ public sealed class WorkflowInboxMessageConfig : IEntityTypeConfiguration<Workfl
         builder.Property(x => x.AttemptCount)
             .IsRequired();
 
+        builder.Property(x => x.TotalAttemptCount)
+            .IsRequired();
+
         builder.Property(x => x.NextAttemptAtUtc)
             .HasDefaultValueSql("SYSUTCDATETIME()")
             .IsRequired();
