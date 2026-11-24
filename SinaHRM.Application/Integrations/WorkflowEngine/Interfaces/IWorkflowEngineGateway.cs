@@ -11,7 +11,7 @@ public interface IWorkflowEngineGateway
 
 public interface IContractWorkflowService
 {
-    Task<Guid> StartForDraftContractAsync(
+    Task<SinaHRM.Domain.Common.Result<Guid>> StartForDraftContractAsync(
         int contractId,
         CancellationToken cancellationToken);
 }
