@@ -2,7 +2,9 @@ using System.Globalization;
 using SinaHRM.Application.ContractManagement.Interfaces;
 using SinaHRM.Application.Integrations.WorkflowEngine.Contracts;
 using SinaHRM.Application.Integrations.WorkflowEngine.Interfaces;
+using SinaHRM.Domain.Common;
 using SinaHRM.Domain.Enums;
+using SinaHRM.Domain.Exceptions;
 
 namespace SinaHRM.Application.Integrations.WorkflowEngine.Services;
 
@@ -23,26 +25,28 @@ public sealed class ContractWorkflowService : IContractWorkflowService
         _workflowEngineGateway = workflowEngineGateway;
     }
 
-    public async Task<Guid> StartForDraftContractAsync(
+    public async Task<Result<Guid>> StartForDraftContractAsync(
         int contractId,
         CancellationToken cancellationToken)
     {
         if (contractId <= 0)
-            throw new ArgumentOutOfRangeException(nameof(contractId));
+            return Result<Guid>.Failure(
+                new Error("400", "Contract id must be a positive integer."));
 
         var contract = await _contractRepository.GetForWorkflowStartAsync(
             contractId,
             cancellationToken);
 
         if (contract is null)
-            throw new KeyNotFoundException($"Employment contract '{contractId}' was not found.");
+            return Result<Guid>.Failure(
+                new Error("404", $"Employment contract '{contractId}' was not found."));
 
         if (contract.WorkflowInstanceId is Guid existingWorkflowInstanceId)
-            return existingWorkflowInstanceId;
+            return Result<Guid>.Success(existingWorkflowInstanceId);
 
         if (contract.Status != EmploymentContractStatus.Draft)
-            throw new InvalidOperationException(
-                "Only a draft employment contract without an existing workflow can be submitted.");
+            return Result<Guid>.Failure(
+                new Error("409", "Only a draft employment contract without an existing workflow can be submitted."));
 
         var businessReference = contract.Id.ToString(CultureInfo.InvariantCulture);
         var idempotencyKey = $"employment-contract:{businessReference}:workflow-start:v1";
@@ -72,7 +76,7 @@ public sealed class ContractWorkflowService : IContractWorkflowService
             cancellationToken);
 
         if (persisted)
-            return workflowInstanceId;
+            return Result<Guid>.Success(workflowInstanceId);
 
         // Another caller may have completed the same idempotent request concurrently.
         var latest = await _contractRepository.GetForWorkflowStartAsync(
@@ -80,9 +84,11 @@ public sealed class ContractWorkflowService : IContractWorkflowService
             cancellationToken);
 
         if (latest?.WorkflowInstanceId == workflowInstanceId)
-            return workflowInstanceId;
+            return Result<Guid>.Success(workflowInstanceId);
 
-        throw new InvalidOperationException(
-            "WorkflowEngine started the workflow, but SinaHRM could not associate that instance with the contract. Retry with the same idempotency key or reconcile the contract.");
+        return Result<Guid>.Failure(
+            new Error(
+                "409",
+                "WorkflowEngine started the workflow, but SinaHRM could not associate that instance with the contract. Retry with the same idempotency key or reconcile the contract."));
     }
 }
