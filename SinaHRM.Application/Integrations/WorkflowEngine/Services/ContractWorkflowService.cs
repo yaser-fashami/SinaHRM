@@ -56,7 +56,7 @@ public sealed class ContractWorkflowService : IContractWorkflowService
             WorkflowDefinitionCode = WorkflowDefinitionCode,
             BusinessType = BusinessType,
             BusinessReference = businessReference,
-            CorrelationId = Guid.NewGuid().ToString("N"),
+            CorrelationId = $"employment-contract:{businessReference}:workflow-start-correlation:v1",
             IdempotencyKey = idempotencyKey,
             ContractSchemaVersion = ContractSchemaVersion
         };
