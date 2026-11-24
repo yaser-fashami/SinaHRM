@@ -2,17 +2,23 @@ namespace SinaHRM.Application.Integrations.WorkflowEngine.Contracts;
 
 public sealed record StartContractWorkflowRequest
 {
-    public required string BusinessReference { get; init; }
-
     public required string WorkflowDefinitionCode { get; init; }
 
-    public required string DocumentTitle { get; init; }
+    public required string BusinessType { get; init; }
 
-    public required string DocumentContent { get; init; }
-
-    public required string DocumentHash { get; init; }
-
-    public required string InitiatorId { get; init; }
+    public required string BusinessReference { get; init; }
 
     public required string CorrelationId { get; init; }
+
+    public required string IdempotencyKey { get; init; }
+
+    public required int ContractSchemaVersion { get; init; }
+
+    public string? DocumentId { get; init; }
+
+    public string? DocumentVersion { get; init; }
+
+    public string? DocumentHash { get; init; }
+
+    public object? Input { get; init; }
 }
