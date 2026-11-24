@@ -63,6 +63,40 @@ public sealed class EmploymentContractRepository : IEmploymentContractRepository
     }
 
 
+    public async Task<EmploymentContract?> GetForWorkflowStartAsync(
+        int contractId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.EmploymentContracts
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                x => x.Id == contractId && !x.IsDelete,
+                cancellationToken);
+    }
+
+    public async Task<bool> TrySetWorkflowInstanceIdAsync(
+        int contractId,
+        Guid workflowInstanceId,
+        CancellationToken cancellationToken)
+    {
+        if (workflowInstanceId == Guid.Empty)
+            throw new ArgumentException("WorkflowInstanceId is required.", nameof(workflowInstanceId));
+
+        var affected = await _context.EmploymentContracts
+            .Where(x =>
+                x.Id == contractId &&
+                !x.IsDelete &&
+                x.Status == EmploymentContractStatus.Draft &&
+                x.WorkflowInstanceId == null)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(
+                    x => x.WorkflowInstanceId,
+                    (Guid?)workflowInstanceId),
+                cancellationToken);
+
+        return affected == 1;
+    }
+
     public async Task<Result<EmploymentContract>> SaveContractWithGeneratedContractNumberAsync(EmploymentContract contract, CancellationToken cancellationToken = default)
     {
         Result<EmploymentContract> result;
