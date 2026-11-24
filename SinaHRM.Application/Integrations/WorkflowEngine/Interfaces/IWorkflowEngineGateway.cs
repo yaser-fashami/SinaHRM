@@ -8,3 +8,10 @@ public interface IWorkflowEngineGateway
         StartContractWorkflowRequest request,
         CancellationToken cancellationToken);
 }
+
+public interface IContractWorkflowService
+{
+    Task<Guid> StartForDraftContractAsync(
+        int contractId,
+        CancellationToken cancellationToken);
+}
