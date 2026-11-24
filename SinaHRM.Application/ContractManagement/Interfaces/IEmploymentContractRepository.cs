@@ -1,4 +1,3 @@
-﻿using SinaHRM.Application.ContractManagement.DTOs;
 using SinaHRM.Domain.Common;
 using SinaHRM.Domain.Entities;
 
@@ -15,6 +14,16 @@ public interface IEmploymentContractRepository
         int employeeId,
         CancellationToken cancellationToken = default);
 
-    Task<Result<EmploymentContract>> SaveContractWithGeneratedContractNumberAsync(EmploymentContract contract,
+    Task<Result<EmploymentContract>> SaveContractWithGeneratedContractNumberAsync(
+        EmploymentContract contract,
         CancellationToken cancellationToken = default);
+
+    Task<EmploymentContract?> GetForWorkflowStartAsync(
+        int contractId,
+        CancellationToken cancellationToken);
+
+    Task<bool> TrySetWorkflowInstanceIdAsync(
+        int contractId,
+        Guid workflowInstanceId,
+        CancellationToken cancellationToken);
 }
